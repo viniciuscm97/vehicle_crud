@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model foto_veiculo {
+  id         Int      @id @default(autoincrement())
+  veiculo_id Int
+  foto       Bytes    @db.Blob
+  veiculos   veiculos @relation(fields: [veiculo_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_foto_veiculo_veiculos")
+
+  @@index([veiculo_id], map: "FK_foto_veiculo_veiculos")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model veiculos {
+  placa        String         @db.VarChar(7)
+  rastreado    Boolean
+  comprimento  Float          @db.Float
+  largura      Float          @db.Float
+  altura       Float          @db.Float
+  cubagem      Float          @db.Float
+  id           Int            @id @default(autoincrement())
+  foto_veiculo foto_veiculo[]
+}
